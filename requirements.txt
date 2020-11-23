@@ -1,0 +1,7 @@
+asyncio
+aiogram
+aiohttp
+beautifulsoup4
+requests
+pydantic
+SQLAlchemy
