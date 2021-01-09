@@ -59,7 +59,7 @@ async def callback_button(call: types.CallbackQuery):
     await call.answer()
     users = crud.get_amount_users()
     text = f"""Админ-панель.\n
-Version: 0.9.\n
+Version: 0.9.1\n
 Пользователей: {users}"""
     await call.message.edit_text(text=text,
                                  reply_markup=buttons.admin_panel)
