@@ -8,6 +8,8 @@ async def threads(forum_id, page, cookies, connector):
                                  connector=connector) as session:
             resp = await session.get("http://mrush.mobi/threads", params={'id': forum_id, 'page': page})
             await session.close()
+            if "Вы кликаете слишком быстро" in await resp.text():
+                return await threads(forum_id, page, cookies, connector)
             resp = BeautifulSoup(await resp.read(), "lxml")
             links = []
         for link in resp.find_all("a", href=True):

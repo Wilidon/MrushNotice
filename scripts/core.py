@@ -84,7 +84,7 @@ async def get_stats(thread_id):
         return "Ошибка (get_stats) {}".format(e)
 
 
-async def sort_word(total_word):
+async   def sort_word(total_word):
     try:
         stats = "<pre>"
         stats2 = stats3 = False
@@ -104,11 +104,11 @@ async def sort_word(total_word):
                         stats3 = stats2
                         stats = stats + "</pre>"
                         stats2 = stats
-                        stats = "<pre>\n"
+                        stats = "<pre>"
                     else:
                         stats = stats + "</pre>"
                         stats2 = stats
-                        stats = "<pre>\n"
+                        stats = "<pre>"
                 num += 1
             count += 1
         return stats, stats2, stats3
@@ -123,13 +123,19 @@ async def find_word(message):
             thread_id = message.text.split(" ")[1]
             word = message.text.split(" ")[2]
             mrush = MrushApi(settings.name, settings.password)
-            await mrush.login()
+            r = await mrush.login()
             page, nicks, count, nicks_page, count_page = 1, {}, {}, {}, {}
             total_word = {}
             while True:
                 r = await mrush.thread(thread_id, page)
+                if r['status'] == 'error' and r['code'] == 0:
+                    await message.answer("Возникла непредвиденная ошибка. Попробуйте еще раз!")
+                    return 0
                 if r['status'] == 'error' and r['code'] == 1:
                     break
+                if r['status'] == 'error' and r['code'] == 2:
+                    await message.answer("Топ не найден.")
+                    return 0
                 for i in r['messages']:
                     if word.lower() in i['message'].lower():
                         if page in total_word:
@@ -158,6 +164,7 @@ async def find_word(message):
         else:
             pass
     except:
+        raise
         pass
 
 
@@ -214,5 +221,52 @@ async def block(message):
                                      f"заблокирован.")
             else:
                 await message.asnwer("Пользователя несуществует.")
+    except:
+        pass
+
+
+async def players(message):
+    user_id = message.from_user.id
+    if not(user_id in settings.admins):
+        return 0
+    try:
+        try:
+            names = message.text.split(" ", maxsplit=1)[1].split(", ")
+        except:
+            await message.answer("Не удалось найти ники.")
+            return 0
+        account = MrushApi(settings.name, settings.password)
+        await account.login()
+        text = ""
+        for name in names:
+            profile = await account.find_player(name)
+            if profile["status"] == 'ok':
+                text += f"[url=view_profile?player_id=" \
+                        f"{profile['player_id']}]{name}[/url]\n"
+        if text:
+            await message.answer(text)
+    except:
+        pass
+
+
+async def clans(message):
+    user_id = message.from_user.id
+    if not(user_id in settings.admins):
+        return 0
+    try:
+        try:
+            names = message.text.split(" ", maxsplit=1)[1].split(", ")
+        except:
+            await message.answer("Не удалось найти кланы.")
+            return 0
+        account = MrushApi(settings.name, settings.password)
+        await account.login()
+        text = ""
+        for name in names:
+            clan = await account.find_clan(name)
+            if clan["status"] == 'ok':
+                text += f"[url=clan?id=" \
+                        f"{clan['clan_id']}]{name}[/url]\n"
+        await message.answer(text)
     except:
         pass

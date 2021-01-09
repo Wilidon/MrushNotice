@@ -1,6 +1,6 @@
 import asyncio
 
-from mrushapi import authorization, forum, profile
+from mrushapi import authorization, forum, profile, main
 
 
 class MrushApi:
@@ -34,13 +34,11 @@ class MrushApi:
             Resp:
                 cookies (dict): Куки
         """
-        resp = await authorization.login(name=self.name, password=self.password, connector=self.connector)
+        resp = await authorization.login(name=self.name, password=self.password,
+                                         connector=self.connector)
         if resp['status'] == 'ok':
             self.cookies = resp['cookies']
         return resp
-
-    async def test_func(self):
-        await asyncio.sleep(15)
 
     async def threads(self, forum_id, page=1):
         return await forum.threads(forum_id, page, self.cookies, self.connector)
@@ -50,3 +48,9 @@ class MrushApi:
 
     async def view_profile(self, player_id):
         return await profile.view_profile(player_id, self.cookies, self.connector)
+
+    async def find_player(self, name):
+        return await main.find_player(name, self.cookies, self.connector)
+
+    async def find_clan(self, name):
+        return await main.find_clan(name, self.cookies, self.connector)

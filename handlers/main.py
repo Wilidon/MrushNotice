@@ -2,7 +2,7 @@ from aiogram import types
 
 from config import get_settings
 from keyboards import buttons
-from scripts.core import get_stats, find_word, block
+from scripts.core import get_stats, find_word, block, players, clans
 from sql import crud
 from tg import dp, bot
 
@@ -55,6 +55,16 @@ async def send_stats(message: types.Message):
 @dp.message_handler(commands=['block'])
 async def send_stats(message: types.Message):
     await block(message)
+
+
+@dp.message_handler(commands=['players'])
+async def send_stats(message: types.Message):
+    await players(message)
+
+
+@dp.message_handler(commands=['clans'])
+async def send_stats(message: types.Message):
+    await clans(message)
 
 
 @dp.message_handler(content_types=["text"])
