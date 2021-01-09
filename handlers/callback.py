@@ -3,7 +3,7 @@ from aiogram import types
 from config import get_settings
 from keyboards import buttons
 from sql import crud
-from tg import dp
+from mrush_tg import dp
 
 
 settings = get_settings()

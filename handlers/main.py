@@ -4,7 +4,7 @@ from config import get_settings
 from keyboards import buttons
 from scripts.core import get_stats, find_word, block, players, clans
 from sql import crud
-from tg import dp, bot
+from mrush_tg import dp, bot
 
 settings = get_settings()
 
