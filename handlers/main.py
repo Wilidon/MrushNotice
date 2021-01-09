@@ -4,7 +4,7 @@ from config import get_settings
 from keyboards import buttons
 from scripts.core import get_stats, find_word, block, players, clans
 from sql import crud
-from mrush_tg import dp, bot
+from mrush_tg import dp
 
 settings = get_settings()
 
@@ -69,4 +69,5 @@ async def send_stats(message: types.Message):
 
 @dp.message_handler(content_types=["text"])
 async def echo(message: types.Message):
+    await message.answer("test")
     pass
